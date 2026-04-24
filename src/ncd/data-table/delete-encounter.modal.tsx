@@ -2,21 +2,22 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, InlineLoading, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import { showSnackbar } from '@openmrs/esm-framework';
-import { deleteEncounter, useEncounters } from './encounter.resource';
+import { deleteEncounter } from '../../api/api';
 
 interface DeleteEncounterModalProps {
   closeDeleteModal: () => void;
   encounterUuid: string;
   patientUuid?: string;
+  onConfirmDelete: () => void;
 }
 
 const DeleteEncounterModal: React.FC<DeleteEncounterModalProps> = ({
   closeDeleteModal,
   encounterUuid,
   patientUuid,
+  onConfirmDelete,
 }) => {
   const { t } = useTranslation();
-  const { mutate } = useEncounters(patientUuid); // Hook to refresh encounters
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = useCallback(async () => {
@@ -27,7 +28,7 @@ const DeleteEncounterModal: React.FC<DeleteEncounterModalProps> = ({
       .then((res) => {
         if (res.ok) {
           closeDeleteModal(); // Close the modal
-          mutate(); // Refresh the encounters list
+          onConfirmDelete();
           showSnackbar({
             isLowContrast: true,
             kind: 'success',
@@ -52,7 +53,7 @@ const DeleteEncounterModal: React.FC<DeleteEncounterModalProps> = ({
     return () => {
       abortController.abort();
     };
-  }, [closeDeleteModal, encounterUuid, mutate, patientUuid, t]);
+  }, [closeDeleteModal, encounterUuid, patientUuid, t, onConfirmDelete]);
 
   return (
     <div>

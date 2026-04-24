@@ -4,14 +4,16 @@ export const encounterRepresentation =
   'obs:(uuid,obsDatetime,voided,groupMembers,formFieldNamespace,formFieldPath,concept:(uuid,name:(uuid,name)),value:(uuid,name:(uuid,name),' +
   'names:(uuid,conceptNameType,name))))';
 
-export const templateEsmFieldConcepts = {
-  sampleTextInput: '2c30c599-1e4f-46f9-8488-5ab57cdc8ac3',
-  sampleNumber: '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-  sampleDate: '160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-};
+export const ncdFollowUpEncounterType = 'f4ff3fcc-823a-4b19-b156-b2d73e332707';
+export const ncdFollowupFormUuid = '76a5dc97-c09c-466b-a846-5a596aad4caf'; //needs typo fix on ethiohri
 
-export const templateEsmWorkspace = 'template-esm-workspace';
+export const ncdScreeningEncounterType = '5c3fc8a6-a6fe-4fbf-a499-ebe16836b8fd';
+export const ncdScreeningFormUuid = '3d95aca0-8bc9-4640-ab18-eda369eafa0e';
 
-export const FOLLOWUP_ENCOUNTER_TYPE_UUID = '136b2ded-22a3-4831-a39a-088d35a50ef5';
-export const TEMPLATE_ENCOUNTER_TYPE_UUID = 'a4ba8e16-21ff-48ce-9554-7d08b1169e33';
-export const TEMPLATE_FORM_UUID = '4ed66728-410c-437e-9b9e-437a3b66f2fa';
+export const ncdIdentifierType = '5b979f2e-9190-47b4-b8e7-2a1d43b4c7a6';
+export const identifierLocation = '44c3efb0-2583-4c80-a79e-1f756a03c0a1';
+
+export const encounterTypeIntakeA = '05add044-67f8-48c9-928d-79002ab19efe';
+export const dateOfHIVConfirmation = '160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+export const intakeEnrollmentDate = '0fe4faee-0717-4dc0-be3d-1cd52923804a';

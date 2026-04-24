@@ -4,46 +4,54 @@ import { Layer, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { launchPatientWorkspace } from '@openmrs/esm-patient-common-lib';
 import { showModal, useLayoutType } from '@openmrs/esm-framework';
 import styles from './encounter-action-menu.scss';
-import { type OpenmrsEncounter } from '../types';
-import { templateEsmWorkspace } from '../constants';
-import { deleteEncounter } from './encounter.resource';
+import { type OpenmrsEncounter } from '../../types';
 
 interface EncounterActionMenuProps {
   encounter: OpenmrsEncounter;
+  workspaceName: string;
+  headerTitle: string;
   patientUuid?: string;
   mutateEncounters: () => void;
 }
 
-export const EncounterActionMenu = ({ encounter, patientUuid, mutateEncounters }: EncounterActionMenuProps) => {
+export const EncounterActionMenu = ({
+  encounter,
+  workspaceName,
+  headerTitle,
+  patientUuid,
+  mutateEncounters,
+}: EncounterActionMenuProps) => {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
 
   const launchEditEncounterForm = useCallback(() => {
-    launchPatientWorkspace(templateEsmWorkspace, {
-      workspaceTitle: t('editEncounter', 'Edit Encounter'),
+    launchPatientWorkspace(workspaceName, {
+      workspaceTitle: t('editEncounter', 'Edit ' + headerTitle),
       encounter,
+      type: { edit: true },
+      mutateEncounters,
       formContext: 'editing',
     });
-  }, [encounter, t]);
+  }, [encounter, t, headerTitle, workspaceName, mutateEncounters]);
 
-  const launchDeleteEncounterDialog = (encounterUuid: string) => {
-    const abortController = new AbortController(); // Create an AbortController
+  const launchViewEncounterForm = useCallback(() => {
+    launchPatientWorkspace(workspaceName, {
+      workspaceTitle: t('viewEncounter', 'View ' + headerTitle),
+      encounter,
+      type: { view: true },
 
-    const dispose = showModal('encounter-delete-confirmation-dialog', {
+      formContext: 'viewing',
+    });
+  }, [encounter, t, headerTitle, workspaceName]);
+
+  const launchDeleteEncounterDialog = () => {
+    const dispose = showModal('encounter-delete-confirmation', {
       closeDeleteModal: () => dispose(),
-      encounterUuid,
+      encounterUuid: encounter.uuid,
       patientUuid,
-      onConfirmDelete: async () => {
-        try {
-          // Call the deleteEncounter function
-          await deleteEncounter(patientUuid ?? '', encounterUuid, abortController);
-          // Call mutateEncounters to reload the list
-          mutateEncounters();
-
-          dispose(); // Close the modal after success
-        } catch (error) {
-          console.error('Error deleting encounter:', error);
-        }
+      onConfirmDelete: () => {
+        mutateEncounters();
+        dispose();
       },
     });
   };
@@ -58,6 +66,12 @@ export const EncounterActionMenu = ({ encounter, patientUuid, mutateEncounters }
       >
         <OverflowMenuItem
           className={styles.menuItem}
+          id="viewEncounter"
+          onClick={launchViewEncounterForm}
+          itemText={t('view', 'View')}
+        />
+        <OverflowMenuItem
+          className={styles.menuItem}
           id="editEncounter"
           onClick={launchEditEncounterForm}
           itemText={t('edit', 'Edit')}
@@ -66,7 +80,7 @@ export const EncounterActionMenu = ({ encounter, patientUuid, mutateEncounters }
           className={styles.menuItem}
           id="deleteEncounter"
           itemText={t('delete', 'Delete')}
-          onClick={() => launchDeleteEncounterDialog(encounter.uuid)}
+          onClick={launchDeleteEncounterDialog}
           isDelete
           hasDivider
           aria-label={t('deleteEncounter', 'Delete Encounter')} // Added aria-label for accessibility

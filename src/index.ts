@@ -1,13 +1,12 @@
 import { getAsyncLifecycle, defineConfigSchema, getSyncLifecycle } from '@openmrs/esm-framework';
 import { configSchema } from './config-schema';
-import { createDashboardLink, createDashboardGroup } from '@openmrs/esm-patient-common-lib';
-import { dashboardMeta, HIV_CARE_AND_TREATMENT, TEMPLATE_ESM_SERVICE_META } from './dashboard.meta';
-import TransferOutSummary from './template-esm/template-esm.component';
+import { createDashboardLink } from '@openmrs/esm-patient-common-lib';
+import { ncdDashboardMeta } from './dashboard.meta';
 
-const moduleName = '@openmrs/esm-ethio-transfer-out';
+export const moduleName = '@icap-ethiopia/esm-ncd-app';
 
 const options = {
-  featureName: 'template-esm',
+  featureName: 'ncd',
   moduleName,
 };
 
@@ -17,45 +16,19 @@ export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }
 
+export const ncd = getAsyncLifecycle(() => import('./ncd/index'), options);
 export const root = getAsyncLifecycle(() => import('./root.component'), options);
-export const transferOutSummary = getSyncLifecycle(TransferOutSummary, options);
 
-export const templateEsmMenu = getSyncLifecycle(
-  createDashboardGroup(HIV_CARE_AND_TREATMENT),
-  options
-);
-
-export const templateEsmServiceMenu = getSyncLifecycle(
+export const ncdDashboardLink = getSyncLifecycle(
   createDashboardLink({
-    ...TEMPLATE_ESM_SERVICE_META,
-    moduleName,
-  }),
-  options
-);
-
-export const templateEsmDashboardLink = getSyncLifecycle(
-  createDashboardLink({
-    ...TEMPLATE_ESM_SERVICE_META,
+    ...ncdDashboardMeta,
     moduleName,
   }),
   options,
 );
-export const templateEsmServiceChart = getSyncLifecycle(
-  TransferOutSummary,
-  options
-);
+export const ncdScreeningFrom = getAsyncLifecycle(() => import('./forms/screening'), options);
 
-//Care & treatment dashboard link
-export const transferOutDashboardLink = getSyncLifecycle(
-  createDashboardLink({
-    ...dashboardMeta,
-    moduleName,
-  }),
+export const encounterDeleteConfirmation = getAsyncLifecycle(
+  () => import('./ncd/data-table/delete-encounter.modal'),
   options,
 );
-export const templateEsmWorkspace = getAsyncLifecycle(() => import('./forms/template-form.component'), options);
-
-export const encounterDeleteConfirmationDialog = getAsyncLifecycle(() => import('./utils/Delete-Encounter.modal'), {
-  featureName: 'encounters',
-  moduleName: '@openmrs/esm-patient-encounters-app',
-});
