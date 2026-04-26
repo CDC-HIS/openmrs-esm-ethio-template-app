@@ -1,0 +1,182 @@
+ 
+@use '@carbon/layout';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
+@use '@carbon/type';
+
+.container { 
+  & section {
+    margin: layout.$spacing-05 0;
+  }
+  
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column; // Ensures stacked layout
+  gap: layout.$spacing-05; // Carbon spacing token for consistency 
+ 
+}
+.content {
+  flex: 1; /* Make the content div take up available space */
+  margin-bottom: 16px;
+  /* Add any additional styling for the content */
+}
+.buttonContainer {
+  margin-top: auto; /* Push the buttons to the bottom */
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  
+}
+.fieldWrapper {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: flex;
+  flex-direction: row;
+  top: 5px;
+  bottom: 5px;
+  color: black;
+  font-weight:bold;
+}
+.radio {
+  display: flex;
+  flex-direction: row; 
+}
+
+
+.buttonSet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0; 
+  width: 100%;
+
+}
+
+.button {
+  height: layout.$spacing-10; 
+  flex: 1;
+  :hover {
+    color: $ui-02;
+  }
+}
+.buttonError {
+  height: layout.$spacing-10;
+  flex: 1;
+  border: 1px solid colors.$red-60;
+  color: colors.$red-60;
+
+  &:hover,
+  &:focus {
+    background-color: colors.$red-60;
+    color: colors.$white-0;
+    border-color: colors.$red-60;
+
+    svg {
+      fill: colors.$white-0;
+    }
+  }
+}
+.tablet {
+  padding: layout.$spacing-06 layout.$spacing-05;
+  background-color: $ui-02;
+}
+
+.desktop {
+  padding: 0;
+}
+
+.dateTimeSection {
+  display: flex;
+  gap: layout.$spacing-04;
+
+  & > div:first-child {
+    flex: 2; // This makes the first column take up 2/3 of the space
+  }
+
+  & > div:last-child {
+    flex: 1; // This makes the second column take up 1/3 of the space
+  }
+}
+
+.pmtctSection {
+  display: flex;
+  gap: layout.$spacing-04;
+}
+
+@media screen and (max-width: 600px) {
+  .dateTimeSection {
+    flex-direction: column;
+    gap: layout.$spacing-04;
+  }
+}
+:global(.omrs-breakpoint-lt-desktop) .formGroup {
+    flex-direction: row;
+  
+    .heading {
+      flex: 1;
+    }
+  
+    div {
+      flex: 3;
+    }
+  }
+
+.heading {
+  // color: colors.$gray-70;
+  @include type.type-style('heading-compact-02');
+  margin-bottom: layout.$spacing-03;
+  margin-left: layout.$spacing-05;
+}
+
+.lastField {
+  margin-bottom: 76px; /* Adjust as necessary */
+}
+// styles.module.scss
+.containerForm {
+  overflow: auto; // scrolls vertically and horizontally if needed
+  height: 80vh;
+}
+.helperText{
+  color: red;
+  font-weight:bold;
+}
+.required {
+  color:red
+}
+
+
+.formNew {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // or 100% if in a constrained container
+  background-color: colors.$white-0;
+}
+
+.scrollableContent {
+  flex: 1;
+  overflow-y: auto; 
+  min-height: 0;
+}
+
+.stickyButtonSet {
+  position: sticky;
+  bottom: 0;
+  background-color: colors.$white-0;
+  padding: layout.$spacing-05;
+  display: flex; 
+  gap: layout.$spacing-03;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.info {
+  color: colors.$yellow-60;
+  font-weight: bold;
+}

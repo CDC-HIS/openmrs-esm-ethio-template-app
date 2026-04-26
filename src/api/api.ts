@@ -10,7 +10,7 @@ export function saveEncounter(abortController: AbortController, payload, encount
     headers: {
       'Content-Type': 'application/json',
     },
-    method: encounterUuid ? 'POST' : 'POST',
+    method: 'POST',
     body: JSON.stringify(payload),
     signal: abortController.signal,
   }).catch((err) => {
@@ -19,38 +19,46 @@ export function saveEncounter(abortController: AbortController, payload, encount
   });
 }
 
-export function fetchLocation() {
-  return openmrsFetch(`${restBaseUrl}/location?q=&v=default`);
-}
-
-export async function getPatientInfo(patientUuid: string) {
-  try {
-    const response = await openmrsFetch(`${restBaseUrl}/patient/${patientUuid}?v=full`);
-    const data = await response.data;
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching patient emergency contact:', error);
-    return null;
-  }
-}
-
-export function getPatientEncounters(patientUUID, encounterUUID) {
-  //This function fetches the first two encounters for a given patient. You can remove the limit and also the "v=full"
-  return openmrsFetch(
-    `${restBaseUrl}/encounter?encounterType=${encounterUUID}&patient=${patientUUID}&v=full&limit=5`,
-  ).then(({ data }) => {
-    return data.results;
+export function deleteEncounter(patientUuid: string, encounterUuid: string, abortController: AbortController) {
+  return openmrsFetch(`${restBaseUrl}/encounter/${encounterUuid}`, {
+    method: 'DELETE',
+    signal: abortController.signal,
   });
 }
+export const validatencounter = async (
+  patientUuid,
+  encounterTypeUuid,
+  concept,
+  encounterDate,
+  abortController: AbortController,
+) => {
+  const response = await openmrsFetch(
+    `/ws/rest/v1/ethiohri/validatencounter?patientUuid=${patientUuid}&encounterTypeUuid=${encounterTypeUuid}&conceptUuid=${concept}&obsDate=${encounterDate}`,
+    {
+      method: 'GET',
+      signal: abortController.signal,
+      headers: {
+        Accept: 'application/json',
+      },
+    },
+  );
+  return response.data;
+};
 
-export function fetchPatientLastEncounter(patientUuid: string, encounterType) {
-  const query = `encounterType=${encounterType}&patient=${patientUuid}`;
-  return openmrsFetch(`${restBaseUrl}/encounter?${query}&v=${encounterRepresentation}`).then(({ data }) => {
-    if (data.results.length) {
-      return data.results[data.results.length - 1];
-    }
+export function identifierGeneration(abortController: AbortController, payload, patientUuid: string, uuid?: string) {
+  const url = uuid
+    ? `${restBaseUrl}/patient/${patientUuid}/identifier/${uuid}`
+    : `${restBaseUrl}/patient/${patientUuid}/identifier`;
 
-    return null;
+  return openmrsFetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(payload),
+    signal: abortController.signal,
+  }).catch((err) => {
+    console.error('Error saving identifier:', err);
+    throw err;
   });
 }
